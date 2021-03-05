@@ -171,6 +171,7 @@ document.querySelector('#stand-button').addEventListener('click', function() {
     dealerCards.push(dealerCard)
     pushCardToScreen(dealerCard, dealerCurrentOffset, dealerY)
     dealerCurrentOffset += 4
+    dealerScore = 0
     dealerCards.forEach(card => {
       dealerScore += card.getNumericValue();
     });
