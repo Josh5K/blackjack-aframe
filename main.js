@@ -59,7 +59,7 @@ function Card(value, suit) {
 function calculateScore() {
   let playerScore = 0;
   let dealerScore = 0;
-  winnerText = document.createElement('a-text')
+  let winnerText = document.createElement('a-text')
   winnerText.setAttribute('position', '0 -3 -10')
   winnerText.setAttribute('scale', '3 3 3')
   winnerText.setAttribute('color', 'black')
@@ -89,7 +89,7 @@ function calculateScore() {
 
   if(dealerScore > 21) {
     let dealerScore = 0;
-    playerCards.forEach(card => {
+    dealerCards.forEach(card => {
       dealerScore += card.getNumericValue(1);
     });
     if(dealerScore > 21) {
