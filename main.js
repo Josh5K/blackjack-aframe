@@ -120,11 +120,12 @@ function pushCardToScreen(card, y = 0) {
 
 function clearBoard() {
   currentOffset = -4
-  var elements = document.getElementsByClassName('winner-text');
-  while(elements.length > 0){
-      elements[0].parentNode.removeChild(elements[0]);
+  let winnerElements = document.getElementsByClassName('winner-text');
+  dealerHidden.setAttribute('src', `assets/cardback.jpg`)
+  while(winnerElements.length > 0){
+    winnerElements[0].parentNode.removeChild(winnerElements[0]);
   }
-  var elements = document.getElementsByClassName('additional-cards');
+  let elements = document.getElementsByClassName('additional-cards');
   while(elements.length > 0){
       elements[0].parentNode.removeChild(elements[0]);
   }
@@ -141,6 +142,7 @@ document.querySelector('#hit-button').addEventListener('click', function() {
 });
 
 document.querySelector('#stand-button').addEventListener('click', function() {
+  dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
   calculateScore()
 });
 
