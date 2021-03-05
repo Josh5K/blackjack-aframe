@@ -71,7 +71,7 @@ function calculateScore() {
   });
 
   if(playerScore > 21) {
-    let playerScore = 0;
+    playerScore = 0;
     playerCards.forEach(card => {
       playerScore += card.getNumericValue(1);
     });
