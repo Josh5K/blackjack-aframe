@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: lightgray">
+      <a-assets>
+        <img id="cardback" src="assets/cardback.jpg">
+      </a-assets>
+      <a-entity camera position="0 1.6 0" cursor="rayOrigin: mouse"></a-entity>
+      <a-plane id="dealer-hidden" src="#cardback" height="5" position="-12 6 -10" width="4"></a-plane>
+      <a-plane id="dealer-visable" src="#cardback" height="5" position="-8 6 -10" width="4"></a-plane>
+      <a-plane id="player-hidden" src="#cardback" height="5" position="-12 0 -10" width="4"></a-plane>
+      <a-plane id="player-visable" src="#cardback" height="5" position="-8 0 -10" width="4"></a-plane>
+      <a-plane id="hit-button" material="color: #444346" position="0 -6 -10" height="1" width="10" text="value: Hit me!; align: center; height: auto" data-clickable></a-plane>
+      <a-plane id="start-button"  material="color: #444346" position="-11 -6 -10"  height="1" width="10" text="value: Start Game!; align: center" data-clickable></a-plane>
+      <a-plane id="stand-button"  material="color: #444346" position="11 -6 -10"  height="1" width="10" text="value: Stand!; align: center" data-clickable></a-plane>
+    </a-scene>
+    <script src="main.js"></script>
+  </body>
+</html>
