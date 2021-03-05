@@ -8,6 +8,7 @@ var playerCards = []
 var dealerCards = []
 var gameDeck;
 var currentOffset = -4
+var dealerCurrentOffset = -4
 var dealerY = 6
 
 function Deck() {
@@ -108,11 +109,11 @@ function calculateScore() {
   console.log(`${winner} Wins!`)
 }
 
-function pushCardToScreen(card, y = 0) {
+function pushCardToScreen(card, x, y = 0) {
   cardPlane = document.createElement('a-plane')
   cardPlane.setAttribute('height', '5')
   cardPlane.setAttribute('width', '4')
-  cardPlane.setAttribute('position', `${currentOffset} ${y} -10`)
+  cardPlane.setAttribute('position', `${x} ${y} -10`)
   cardPlane.setAttribute('src', `assets/${card.toString()}.png`)
   cardPlane.setAttribute('class', 'additional-cards')
   scene.appendChild(cardPlane);
@@ -120,6 +121,7 @@ function pushCardToScreen(card, y = 0) {
 
 function clearBoard() {
   currentOffset = -4
+  dealerCurrentOffset = -4
   let winnerElements = document.getElementsByClassName('winner-text');
   dealerHidden.setAttribute('src', `assets/cardback.jpg`)
   while(winnerElements.length > 0){
@@ -132,17 +134,47 @@ function clearBoard() {
 }
 
 document.querySelector('#hit-button').addEventListener('click', function() {
+  let dealerScore = 0
   let playerCard = gameDeck.deal()
-  let dealerCard = gameDeck.deal()
+
   playerCards.push(playerCard)
-  pushCardToScreen(playerCard)
-  dealerCards.push(dealerCard)
-  pushCardToScreen(dealerCard, dealerY)
+  pushCardToScreen(playerCard, currentOffset)
   currentOffset += 4
+
+  dealerCards.forEach(card => {
+    dealerScore += card.getNumericValue();
+  });
+
+  if(dealerScore > 21) {
+    dealerScore = 0;
+    dealerCards.forEach(card => {
+      dealerScore += card.getNumericValue(1);
+    });
+  }
+
+  if(17 > dealerScore) {
+    let dealerCard = gameDeck.deal()
+    dealerCards.push(dealerCard)
+    pushCardToScreen(dealerCard, dealerCurrentOffset, dealerY)
+    dealerCurrentOffset += 4
+  }
 });
 
 document.querySelector('#stand-button').addEventListener('click', function() {
   dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
+  let dealerScore = 0
+  dealerCards.forEach(card => {
+    dealerScore += card.getNumericValue();
+  });
+  while(dealerScore < 17) {
+    let dealerCard = gameDeck.deal()
+    dealerCards.push(dealerCard)
+    pushCardToScreen(dealerCard, dealerCurrentOffset, dealerY)
+    dealerCurrentOffset += 4
+    dealerCards.forEach(card => {
+      dealerScore += card.getNumericValue();
+    });
+  }
   calculateScore()
 });
 
