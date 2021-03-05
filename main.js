@@ -89,7 +89,7 @@ function calculateScore() {
   });
 
   if(dealerScore > 21) {
-    let dealerScore = 0;
+    dealerScore = 0;
     dealerCards.forEach(card => {
       dealerScore += card.getNumericValue(1);
     });
