@@ -198,3 +198,18 @@ document.querySelector('#start-button').addEventListener('click', function() {
   playerVisable.setAttribute('src', `assets/${playerCards[0].toString()}.png`)
   playerHidden.setAttribute('src', `assets/${playerCards[1].toString()}.png`)
 });
+
+
+//Github Pages implements some aggressive caching. Load new versions of the page if there's an update
+document.addEventListener('load', function(e) {
+
+  document.applicationCache.addEventListener('updateready', function(e) {
+    if (document.applicationCache.status == window.applicationCache.UPDATEREADY) {
+      document.applicationCache.swapCache();
+      if (confirm('A new version of this site is available. Load it?')) {
+        document.location.reload();
+      }
+    }
+  }, false);
+
+}, false);
