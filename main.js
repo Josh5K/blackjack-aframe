@@ -3,6 +3,7 @@ const dealerHidden = document.getElementById("dealer-hidden")
 const playerVisable = document.getElementById("player-visable")
 const playerHidden = document.getElementById("player-hidden")
 const scene = document.querySelector('a-scene')
+const camera = document.getElementById('camera')
 
 var playerCards = []
 var dealerCards = []
@@ -63,9 +64,8 @@ function calculateScore() {
   let playerScore = 0;
   let dealerScore = 0;
   let winnerText = document.createElement('a-text')
-  winnerText.setAttribute('position', '0 -3 -10')
+  winnerText.setAttribute('position', '-1.5 4 -10')
   winnerText.setAttribute('scale', '3 3 3')
-  winnerText.setAttribute('color', 'black')
   winnerText.setAttribute('class', 'winner-text')
 
   playerCards.forEach(card => {
@@ -80,7 +80,7 @@ function calculateScore() {
     if(playerScore > 21) {
       console.log('Dealer Wins!');
       winnerText.setAttribute('value', "Dealer Wins!")
-      scene.appendChild(winnerText);
+      camera.appendChild(winnerText);
       console.log(`${dealerScore}/${playerScore}`)
       return;
     }
@@ -98,7 +98,7 @@ function calculateScore() {
     if(dealerScore > 21) {
       console.log('Player Wins!');
       winnerText.setAttribute('value', "Player Wins!")
-      scene.appendChild(winnerText);
+      camera.appendChild(winnerText);
       console.log(`${dealerScore}/${playerScore}`)
       return;
     }
@@ -107,7 +107,7 @@ function calculateScore() {
   console.log(`${dealerScore}/${playerScore}`)
   let winner = dealerScore > playerScore ? 'Dealer' : 'Player'
   winnerText.setAttribute('value', `${winner} Wins!`)
-  scene.appendChild(winnerText);
+  camera.appendChild(winnerText);
   console.log(`${winner} Wins!`)
 }
 
@@ -136,7 +136,7 @@ function clearBoard() {
   }
 }
 
-document.querySelector('#hit-button').addEventListener('click', function() {
+function hit_event() {
   let dealerScore = 0
   let playerCard = gameDeck.deal()
 
@@ -161,9 +161,9 @@ document.querySelector('#hit-button').addEventListener('click', function() {
     pushCardToScreen(dealerCard, dealerCurrentOffset, -.5, dealerZ)
     dealerCurrentOffset += .9
   }
-});
+}
 
-document.querySelector('#stand-button').addEventListener('click', function() {
+function stand_event() {
   dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
   let dealerScore = 0
   dealerCards.forEach(card => {
@@ -180,9 +180,9 @@ document.querySelector('#stand-button').addEventListener('click', function() {
     });
   }
   calculateScore()
-});
+}
 
-document.querySelector('#start-button').addEventListener('click', function() {
+function start_event() {
   clearBoard()
   playerCards = []
   dealerCards = []
@@ -197,8 +197,33 @@ document.querySelector('#start-button').addEventListener('click', function() {
   dealerVisable.setAttribute('src', `assets/${dealerCards[1].toString()}.png`)
   playerVisable.setAttribute('src', `assets/${playerCards[0].toString()}.png`)
   playerHidden.setAttribute('src', `assets/${playerCards[1].toString()}.png`)
-});
+}
 
+function hide_event() {
+  let control_elements = document.getElementsByClassName('controls');
+  for (let i=0; i < control_elements.length; i++) {
+    control_elements[i].setAttribute("visible", !control_elements[i].getAttribute("visible"))
+  }
+}
+
+document.addEventListener('keydown', function(event) {
+  switch(event.code) {
+    case "KeyZ":
+      start_event()
+      break;
+    case "KeyX":
+      hit_event()
+      break;
+    case "KeyC":
+      stand_event();
+      break;
+    case "KeyH":
+      hide_event();
+      break;
+    default:
+      // code block
+  }
+});
 
 //Github Pages implements some aggressive caching. Load new versions of the page if there's an update
 document.addEventListener('load', function(e) {
@@ -213,3 +238,4 @@ document.addEventListener('load', function(e) {
   }, false);
 
 }, false);
+

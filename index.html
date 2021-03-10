@@ -3,22 +3,38 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene background="color: lightgray">
+    <a-scene>
+
       <a-assets>
         <img id="cardback" src="assets/cardback.jpg">
+        <img id="floor" src="assets/carpet.jpg">
+        <img id="wall" src="assets/background.jpeg">
+        <img id="roof" src="assets/tile.jfif">
+
         <a-asset-item id="table-obj" src="assets/table.obj"></a-asset-item>
         <a-asset-item id="table-mtl" src="assets/table.mtl"></a-asset-item>
       </a-assets>
-      <a-entity camera look-controls wasd-controls position="0 2.6 0" cursor="rayOrigin: mouse">
-        <a-plane id="hit-button" material="color: #444346" position="0 -7.75 -10" height="1" width="10" text="value: Hit me!; align: center; height: auto" data-clickable></a-plane>
-        <a-plane id="start-button"  material="color: #444346" position="-11 -7.75 -10"  height="1" width="10" text="value: Start Game!; align: center" data-clickable></a-plane>
-        <a-plane id="stand-button"  material="color: #444346" position="11 -7.75 -10"  height="1" width="10" text="value: Stand!; align: center" data-clickable></a-plane>
+
+      <a-sky src="#wall" color="#EBEBEB"></a-sky>
+
+      <a-entity id="camera" camera look-controls wasd-controls position="0 2.6 0" cursor="rayOrigin: mouse" visible="true">
+        <a-entity class="controls" text="value: Hide controls: H" scale="10 10 10" position="-5 4.5 -6" color="black"></a-entity>
+        <a-entity class="controls" text="value: Move: WASD" scale="10 10 10" position="-5 4 -6"></a-entity>
+        <a-entity class="controls" text="value: Start/Restart Game: Z" scale="10 10 10" position="-5 3.5 -6"></a-entity>
+        <a-entity class="controls" text="value: Hit: X" scale="10 10 10" position="-5 3 -6"></a-entity>
+        <a-entity class="controls" text="value: Stand: C" scale="10 10 10" position="-5 2.5 -6"></a-entity>
+        <a-plane class="controls" color="black" height="2.75" position="-7.75 3.4 -6" width="4.5"></a-plane>
       </a-entity>
       <a-plane id="dealer-hidden" src="#cardback" height="1" position="-3 -.5 -13" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="dealer-visable" src="#cardback" height="1" position="-2.1 -.5 -13" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="player-hidden" src="#cardback"  height="1" position="-3 -.5 -6.2" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="player-visable" src="#cardback"  height="1" position="-2.1 -.5 -6.2" rotation="-90 0 0" width=".75"></a-plane>
+
       <a-entity obj-model="obj: #table-obj; mtl: #table-mtl" scale="5 5 5" position="0 -7 -10 "></a-entity>
+
+      <a-plane src="#floor" height="200" width="200" rotation="-90 0 0" position="0 -8 0" repeat="10 10"></a-plane>
+
+
     </a-scene>
     <script src="main.js"></script>
   </body>
