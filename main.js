@@ -4,6 +4,8 @@ const playerVisable = document.getElementById("player-visable")
 const playerHidden = document.getElementById("player-hidden")
 const scene = document.querySelector('a-scene')
 const camera = document.getElementById('camera')
+const playerScoreElement = document.getElementById("player-count")
+const dealerScoreElement = document.getElementById("dealer-count")
 
 var playerCards = []
 var dealerCards = []
@@ -13,6 +15,7 @@ var dealerCurrentOffset = -1.2
 var dealerY = 6
 var playerZ = -6.2
 var dealerZ = -13
+var winner = false;
 
 function Deck() {
   let values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -60,55 +63,52 @@ function Card(value, suit) {
   }
 }
 
-function calculateScore() {
-  let playerScore = 0;
-  let dealerScore = 0;
+function getCardsScore(cards) {
+  let score = 0;
+  cards.forEach(card => {
+    score += card.getNumericValue();
+  });
+
+  if(score > 21) {
+    score = 0;
+    cards.forEach(card => {
+      score += card.getNumericValue(1);
+    });
+  }
+
+  return score
+}
+
+function checkForWinner() {
+  let playerScore = getCardsScore(playerCards);
+  let playerBust = checkForBust(playerScore);
+  let dealerScore = getCardsScore(dealerCards);
+  let dealerBust = checkForBust(dealerScore);
+
+  if(playerBust) {
+    win("Dealer")
+    return true;
+  }
+  else if(dealerBust) {
+    win("Player")
+    return true;
+  }
+  return false;
+}
+
+function win(winnerName) {
   let winnerText = document.createElement('a-text')
   winnerText.setAttribute('position', '-1.5 4 -10')
   winnerText.setAttribute('scale', '3 3 3')
   winnerText.setAttribute('class', 'winner-text')
-
-  playerCards.forEach(card => {
-    playerScore += card.getNumericValue();
-  });
-
-  if(playerScore > 21) {
-    playerScore = 0;
-    playerCards.forEach(card => {
-      playerScore += card.getNumericValue(1);
-    });
-    if(playerScore > 21) {
-      console.log('Dealer Wins!');
-      winnerText.setAttribute('value', "Dealer Wins!")
-      camera.appendChild(winnerText);
-      console.log(`${dealerScore}/${playerScore}`)
-      return;
-    }
-  }
-
-  dealerCards.forEach(card => {
-    dealerScore += card.getNumericValue();
-  });
-
-  if(dealerScore > 21) {
-    dealerScore = 0;
-    dealerCards.forEach(card => {
-      dealerScore += card.getNumericValue(1);
-    });
-    if(dealerScore > 21) {
-      console.log('Player Wins!');
-      winnerText.setAttribute('value', "Player Wins!")
-      camera.appendChild(winnerText);
-      console.log(`${dealerScore}/${playerScore}`)
-      return;
-    }
-  }
-
-  console.log(`${dealerScore}/${playerScore}`)
-  let winner = dealerScore > playerScore ? 'Dealer' : 'Player'
-  winnerText.setAttribute('value', `${winner} Wins!`)
+  winnerText.setAttribute('value', `${winnerName} Wins!`)
   camera.appendChild(winnerText);
-  console.log(`${winner} Wins!`)
+  dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
+  winner = true;
+}
+
+function checkForBust(score) {
+  return score > 21;
 }
 
 function pushCardToScreen(card, x, y, z) {
@@ -123,6 +123,7 @@ function pushCardToScreen(card, x, y, z) {
 }
 
 function clearBoard() {
+  winner = false;
   currentOffset = -1.2
   dealerCurrentOffset = -1.2
   let winnerElements = document.getElementsByClassName('winner-text');
@@ -137,49 +138,43 @@ function clearBoard() {
 }
 
 function hit_event() {
-  let dealerScore = 0
+  if (winner) return;
   let playerCard = gameDeck.deal()
 
   playerCards.push(playerCard)
   pushCardToScreen(playerCard, currentOffset, -.5, playerZ)
   currentOffset += .9
+  if(!checkForWinner()) {
+    let dealerScore = getCardsScore(dealerCards)
 
-  dealerCards.forEach(card => {
-    dealerScore += card.getNumericValue();
-  });
-
-  if(dealerScore > 21) {
-    dealerScore = 0;
-    dealerCards.forEach(card => {
-      dealerScore += card.getNumericValue(1);
-    });
-  }
-
-  if(17 > dealerScore) {
-    let dealerCard = gameDeck.deal()
-    dealerCards.push(dealerCard)
-    pushCardToScreen(dealerCard, dealerCurrentOffset, -.5, dealerZ)
-    dealerCurrentOffset += .9
+    if(17 > dealerScore) {
+      let dealerCard = gameDeck.deal()
+      dealerCards.push(dealerCard)
+      pushCardToScreen(dealerCard, dealerCurrentOffset, -.5, dealerZ)
+      dealerCurrentOffset += .9
+    }
+    checkForWinner();
   }
 }
 
-function stand_event() {
-  dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
-  let dealerScore = 0
-  dealerCards.forEach(card => {
-    dealerScore += card.getNumericValue();
-  });
-  while(dealerScore < 17) {
+function simDealerPlay() {
+  while(getCardsScore(dealerCards) < 17) {
     let dealerCard = gameDeck.deal()
     dealerCards.push(dealerCard)
     pushCardToScreen(dealerCard, dealerCurrentOffset, -.5, dealerZ)
     dealerCurrentOffset += .9
-    dealerScore = 0
-    dealerCards.forEach(card => {
-      dealerScore += card.getNumericValue();
-    });
+    if(checkForWinner()) return true;
   }
-  calculateScore()
+  return false
+}
+
+function stand_event() {
+  if(winner) return;
+  if (!simDealerPlay()) {
+    let playerScore = getCardsScore(playerCards)
+    let dealerScore = getCardsScore(dealerCards)
+    playerScore >= dealerScore ? win("Player") : win("Dealer")
+  }
 }
 
 function start_event() {
@@ -206,13 +201,25 @@ function hide_event() {
   }
 }
 
+function setScores() {
+  playerScore = getCardsScore(playerCards)
+  dealerScore = getCardsScore(dealerCards)
+
+  if(!winner) {
+    dealerScore -= dealerCards[0].getNumericValue();
+  }
+
+  playerScoreElement.setAttribute("text", `value: Player: ${playerScore}`)
+  dealerScoreElement.setAttribute("text", `value: Dealer: ${dealerScore}`)
+}
+
 document.addEventListener('keydown', function(event) {
   switch(event.code) {
     case "KeyZ":
       start_event()
       break;
     case "KeyX":
-      hit_event()
+      hit_event();
       break;
     case "KeyC":
       stand_event();
@@ -221,8 +228,8 @@ document.addEventListener('keydown', function(event) {
       hide_event();
       break;
     default:
-      // code block
   }
+  setScores();
 });
 
 //Github Pages implements some aggressive caching. Load new versions of the page if there's an update
