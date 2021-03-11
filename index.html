@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -18,22 +19,73 @@
       <a-sky src="#wall" color="#EBEBEB"></a-sky>
 
       <a-entity id="camera" camera look-controls wasd-controls position="0 2.6 0" cursor="rayOrigin: mouse" visible="true">
-        <a-entity class="controls" text="value: Hide controls: H" scale="10 10 10" position="-4.5 4.5 -6" color="black"></a-entity>
-        <a-entity class="controls" text="value: Move: WASD" scale="10 10 10" position="-4.5 4 -6"></a-entity>
-        <a-entity class="controls" text="value: Start/Restart Game: Z" scale="10 10 10" position="-4.5 3.5 -6"></a-entity>
-        <a-entity class="controls" text="value: Hit: X" scale="10 10 10" position="-4.5 3 -6"></a-entity>
-        <a-entity class="controls" text="value: Stand: C" scale="10 10 10" position="-4.5 2.5 -6"></a-entity>
-        <a-entity id="player-count" text="value: Player: 0" scale="10 10 10" position="12.25 4.75 -6"></a-entity>
-        <a-entity id="dealer-count" text="value: Dealer: 0" scale="10 10 10" position="12.25 4.25 -6"></a-entity>
-        <a-plane class="controls" color="black" height="2.75" position="-7.25 3.4 -6" width="4.5"></a-plane>
-      </a-entity>s
+        <a-gui-cursor id="cursor"
+          raycaster="objects: [gui-interactable]"
+          fuse="true"
+          fuse-timeout="1000"
+          color="#ECEFF1"w
+          active-color="#607D8B"
+          design="ring">
+        </a-gui-cursor>
+      </a-entity>
+
+      <a-entity id="player-count" text="value: Player: 0" scale="10 10 10" position="6.5 -.5 -8" rotation="-90 0 0"></a-entity>
+      <a-entity id="dealer-count" text="value: Dealer: 0" scale="10 10 10" position="-1.75 -.5 -11.2" rotation="-90 180 0"></a-entity>
+
       <a-plane id="dealer-hidden" src="#cardback" height="1" position="-3 -.5 -13" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="dealer-visable" src="#cardback" height="1" position="-2.1 -.5 -13" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="player-hidden" src="#cardback"  height="1" position="-3 -.5 -6.2" rotation="-90 0 0" width=".75"></a-plane>
       <a-plane id="player-visable" src="#cardback"  height="1" position="-2.1 -.5 -6.2" rotation="-90 0 0" width=".75"></a-plane>
 
       <a-entity obj-model="obj: #table-obj; mtl: #table-mtl" scale="5 5 5" position="0 -7 -10 "></a-entity>
-
+      <a-gui-button
+        width="1"
+        height="1"
+        base-depth="0.025"
+        depth="0.1"
+        gap="0.1"
+        onclick="start_event"
+        key-code="KeyX"
+        value="Start game!"
+        font-size="0.25"
+        margin="0 0 0.05 0"
+        position="-3 -.5 -7.5"
+        rotation="-90 0 0"
+        font-color="black"
+        bevel="true">
+      </a-gui-button>
+      <a-gui-button
+        width="1"
+        height="1"
+        base-depth="0.025"
+        depth="0.1"
+        gap="0.1"
+        onclick="hit_event"
+        key-code="KeyX"
+        value="Hit me!"
+        font-size="0.25"
+        margin="0 0 0.05 0"
+        position="-1.5 -.5 -7.5"
+        rotation="-90 0 0"
+        font-color="black"
+        bevel="true">
+      </a-gui-button>
+      <a-gui-button
+        width="1"
+        height="1"
+        base-depth="0.025"
+        depth="0.1"
+        gap="0.1"
+        onclick="stand_event"
+        key-code="KeyX"
+        value="Stand!"
+        font-size="0.25"
+        margin="0 0 0.05 0"
+        position="0 -.5 -7.5"
+        rotation="-90 0 0"
+        font-color="black"
+        bevel="true">
+      </a-gui-button>
       <a-plane src="#floor" height="200" width="200" rotation="-90 0 0" position="0 -8 0" repeat="10 10"></a-plane>
 
 

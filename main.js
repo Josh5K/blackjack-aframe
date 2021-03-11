@@ -98,11 +98,11 @@ function checkForWinner() {
 
 function win(winnerName) {
   let winnerText = document.createElement('a-text')
-  winnerText.setAttribute('position', '-1.5 4 -10')
+  winnerText.setAttribute('position', '-1.5 1 -10')
   winnerText.setAttribute('scale', '3 3 3')
   winnerText.setAttribute('class', 'winner-text')
   winnerText.setAttribute('value', `${winnerName} Wins!`)
-  camera.appendChild(winnerText);
+  scene.appendChild(winnerText);
   dealerHidden.setAttribute('src', `assets/${dealerCards[0].toString()}.png`)
   winner = true;
 }
@@ -155,6 +155,7 @@ function hit_event() {
     }
     checkForWinner();
   }
+  setScores();
 }
 
 function simDealerPlay() {
@@ -175,6 +176,7 @@ function stand_event() {
     let dealerScore = getCardsScore(dealerCards)
     playerScore >= dealerScore ? win("Player") : win("Dealer")
   }
+  setScores();
 }
 
 function start_event() {
@@ -192,13 +194,7 @@ function start_event() {
   dealerVisable.setAttribute('src', `assets/${dealerCards[1].toString()}.png`)
   playerVisable.setAttribute('src', `assets/${playerCards[0].toString()}.png`)
   playerHidden.setAttribute('src', `assets/${playerCards[1].toString()}.png`)
-}
-
-function hide_event() {
-  let control_elements = document.getElementsByClassName('controls');
-  for (let i=0; i < control_elements.length; i++) {
-    control_elements[i].setAttribute("visible", !control_elements[i].getAttribute("visible"))
-  }
+  setScores();
 }
 
 function setScores() {
@@ -212,25 +208,6 @@ function setScores() {
   playerScoreElement.setAttribute("text", `value: Player: ${playerScore}`)
   dealerScoreElement.setAttribute("text", `value: Dealer: ${dealerScore}`)
 }
-
-document.addEventListener('keydown', function(event) {
-  switch(event.code) {
-    case "KeyZ":
-      start_event()
-      break;
-    case "KeyX":
-      hit_event();
-      break;
-    case "KeyC":
-      stand_event();
-      break;
-    case "KeyH":
-      hide_event();
-      break;
-    default:
-  }
-  setScores();
-});
 
 //Github Pages implements some aggressive caching. Load new versions of the page if there's an update
 document.addEventListener('load', function(e) {
